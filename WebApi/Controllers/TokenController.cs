@@ -33,25 +33,29 @@ namespace WebApi.Controllers
             var userData = user.ToObject<Dictionary<string, string>>();
             var username = userData["username"];
             var password = userData["password"];
+            var claims = userData["claims"].Split(',');
 
             if (IsValid(username, password))
             {
-                var token = GenerateToken(username);
+                var token = GenerateToken(username, claims);
                 return new ObjectResult(token);
             }
 
             return BadRequest();
         }
 
-        private object GenerateToken(string username)
+        private object GenerateToken(string username, string[] userClaims)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, "client"),
+
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString()),
             };
+
+            claims.AddRange(userClaims.Select(userClaim => new Claim(userClaim.Trim(), "true")));
 
             var token = new JwtSecurityToken(
                     new JwtHeader(new SigningCredentials(_key, SecurityAlgorithms.HmacSha256)),

@@ -50,6 +50,11 @@ namespace WebApi
                 };
             });
 
+            services.AddAuthorization(c =>
+            {
+                c.AddPolicy("readonly", policy => policy.RequireClaim("readonly"));
+                c.AddPolicy("admin", policy => policy.RequireClaim("admin"));
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -75,6 +80,7 @@ namespace WebApi
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

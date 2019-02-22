@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
 namespace WebApi.Controllers
 {
+    [Authorize(Policy = "readonly")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -15,6 +17,7 @@ namespace WebApi.Controllers
         // GET api/launch
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(Launch))]
+        [ProducesResponseType(401)]
         public ActionResult<Launch> Get(string id)
         {
             return Ok(GetTestData());
