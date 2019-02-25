@@ -17,8 +17,7 @@ namespace TestClient
             var user = new Dictionary<string, string>
             {
                 { "username", "essenbee"},
-                { "password", "password"},
-                { "claims", "readonly" }
+                { "password", "password"}
             };
 
             try
